@@ -4,7 +4,6 @@ import axios from "axios";
 
 const app = express();
 const PORT = 1010;
-const KEY = process.env.KEY;
 app.use(express.json());
 
 app.get("/search/:query", async (req, res) => {
@@ -17,7 +16,6 @@ app.get("/search/:query", async (req, res) => {
       throw new Error("Книги не найдены");
     }
 
-    // Возвращаем только нужные данные о книгах
     const filteredBooks = books.map((book) => ({
       title: book.title,
       subtitle: book.subtitle,
@@ -36,4 +34,3 @@ app.listen(PORT, () => {
   console.log(`Server start in URL http:localhost:${PORT}`);
 });
 
-// https://api.openweathermap.org/geo/1.0/directl?q={city}&limit=1&appid={API key}
