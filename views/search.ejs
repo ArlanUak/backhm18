@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css">
+    <title>Document</title>
+  </head>
+  <body>
+    <%- include("header") %>
+    <main>
+      <h1>Поиск книг</h1>
+      <p>Введите название книги для поиска:</p>
+      
+      <form action="/search" method="GET" class="search-form">
+          <input type="text" name="query" value="<%= query %>" required>
+          <button type="submit">Искать</button>
+      </form>
+    
+      <% if (typeof books !== "undefined" && query) { %> 
+          <% if (error) { %>
+              <p style="color: red"><%= error %></p>
+          <% } else if (books && books.length === 0) { %>
+              <p style="color: red">Книги с таким названием не найдены, попробуйте новый запрос.</p>
+          <% } else { %>
+              <ul>
+                  <% books.forEach(book => { %>
+                  <li>
+                      <img src="<%= book.image %>" alt="<%= book.title %>">
+                      <a href="<%= book.url %>" target="_blank"><%= book.title %></a>
+                      <p><%= book.subtitle %></p>
+                      <p><strong>Цена:</strong> <%= book.price %></p>
+                  </li>
+                  <% }) %>
+              </ul>
+          <% } %>
+      <% } %>
+    </main>
+    
+  
+  </body>
+</html>

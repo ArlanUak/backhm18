@@ -4,30 +4,33 @@ import axios from "axios";
 
 const app = express();
 const PORT = 1010;
+
 app.use(express.json());
 
-app.get("/search/:query", async (req, res) => {
-  const { query } = req.params;
-  const apiUrl = `https://api.itbook.store/1.0/search/${query}`;
+app.set("view engine", "ejs");
+app.set("views", "views");
+app.use(express.static("public"));
+
+app.get("/", (req,res) => {
+  res.render("index", {title: "Главная страница"});
+});
+
+app.get("/search", async (req, res) => {
+  const { query } = req.query;
+  if(!query) return res.render("search", {books: null, error: null, query: ""});
+  
   try {
+    const apiUrl = `https://api.itbook.store/1.0/search/${query}`;
     const response = await axios.get(apiUrl);
-    const books = response.data.books;
-    if (!books || books.length === 0) {
-      throw new Error("Книги не найдены");
-    }
-
-    const filteredBooks = books.map((book) => ({
-      title: book.title,
-      subtitle: book.subtitle,
-      price: book.price,
-      image: book.image,
-      url: book.url,
-    }));
-
-    res.json(filteredBooks);
+    const books = response.data.books || [];
+    res.render("search", { books, error: null, query });
   } catch (error) {
-    res.status(500).json({ error: error.message || "Ошибка при получении данных" });
+    res.render("search", {  books: null, error: "Ошибка при получении данных", query });
   }
+});
+
+app.get("/about", (req, res) => {
+  res.render("about", { title: "О проекте" });
 });
 
 app.listen(PORT, () => {
